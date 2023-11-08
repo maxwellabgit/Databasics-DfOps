@@ -46,11 +46,11 @@ print('apply lambda solution run time: ' + str(t2))
 print('increase in speed from while loops: ' + str(int((t1 - t2)/t*100)) + '%')
 
 
-#np.where, the lightning fast bretheren of apply. It only works with one logic statement though :(
+#np.where, the lightning fast numpy version of apply. It only works with one logic statement though :(
 df = df_og
 start = time.time()
 df['newcolumn'] = np.where((df['column']!='Dropout') & (df['othercolumn']>50), 100, df['othercolumn'])
-df['newcolumn'] = np.where((df['column']!='Dropout') & (df['othercolumn']<=50), 0, df['othercolumn'])
+df['newcolumn'] = np.where((df['column']!='Dropout') & (df['othercolumn']<=50), 0, df['newcolumn'])
 
 t3 = time.time() - start
 print('numpy where solution run time: ' + str(t3))
