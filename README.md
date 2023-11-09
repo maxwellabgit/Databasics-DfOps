@@ -4,7 +4,7 @@ A brief exploration of vectorized and non-vectorized implementations of database
 
 ## Our goals in this project are:
 
-1. Establish a synthetic database
+1. Establish an example database
 2. Perform some basic operations using a non-vectorized solution
 3. Explore other methods and iteratively improve processing time while measuring results
 
@@ -15,9 +15,9 @@ As always, lets install our packages.
     import time
     import random as rand
 
-### Establish a Synthetic Database
+### Establish an Example Database
 
-Now we create a synthetic database to perform our basic operations. Three columns with integer and string data should do fine. We use 50000 rows to highlight differences in processing time.
+Now we create an example database to perform our basic operations. Three columns with integer and string data should do fine. We use 50000 rows to highlight differences in processing time.
 
     column = rand.choices(['Dropout' if i == 13 or i ==21 else i for i in range(0,100)],k=50000)
     othercolumn = rand.choices([i for i in range(20,80)], k=50000)
@@ -57,11 +57,11 @@ End the timer and print the result.
     t = time.time() - start
     print('while loop solution run time: ' + str(t))
 
-While loop run time is .677 seconds. Scaling is not an option.
+While loop run time is .677 seconds with 50000 rows. Scaling is not an option.
 
 ![while loop run time...](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/github112.png)
 
-This method is not vectorized because a while loop iteratively applies the inner operations one item at a time. As the size of this database and complexity of our operations increases, the processing time will increase exponentially. We can do better.
+A while loop iteratively applies the inner operations one item at a time, meaning as the database size increases the processing time will increase linearly O(N). If we need to increase the complexity of our operations this method will fail quickly.
 
 ### Explore Other Methods and Iteratively Improve
 
@@ -79,7 +79,7 @@ Now, we can apply our new function to each row at once using *__.apply lambda__*
 
     df['newcolumn'] = df.apply(lambda x: makenewcol(x['column'], x['othercolumn']), axis=1)
 
-Again, we ensure we are starting with the same data and we use our time function to measure processing time.
+We ensure we are starting with the same dataframe and we use the time module to measure processing time.
 
     df = df_og
     start = time.time()
@@ -88,18 +88,18 @@ Again, we ensure we are starting with the same data and we use our time function
     print('apply lambda solution run time: ' + str(t2))
     print('increase in speed from while loops: ' + str(int((t1 - t2)/t*100)) + '%')
 
-The same logic within a function applied with *__.apply__* improves processing time by 48%.
+The same logic defined within a function and applied with *__.apply__* improves processing time by 48%.
 
 ![.apply(lambda x: ) runtime...](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/github111.png)
 
 ### __We can stil do better!__
 
-A lot of people stop at apply lambda after the first iteration of performance improvement. In reality, there is another faster tool we can use called *__numpy where__*. *__.apply__* is a pandas function writted in Python, but *__numpy where__* is written in C and can perform vectorized operations even faster. This operation requires two function calls because *__numpy where__* only takes a single logical statement as its first parameter.
+A lot of people stop at apply lambda after the first iteration of performance improvement. In reality, there is another faster tool we can use called *__numpy where__*. *__.apply__* is a pandas function writted in Python, but *__numpy where__* is written in C and can perform vectorized operations faster than Python. This operation requires two function calls because *__numpy where__* only takes a single logical statement.
 
     df['newcolumn'] = np.where((df['column']!='Dropout') & (df['othercolumn']>50), 100, df['othercolumn'])
     df['newcolumn'] = np.where((df['column']!='Dropout') & (df['othercolumn']<=50), 0, df['othercolumn'])
 
-Again, we ensure we are starting with the same data and we use our time function to measure processing time.
+Again, we ensure we are starting with the same dataframe and we use the time module to measure processing time.
 
     df = df_og
     start = time.time()
@@ -108,11 +108,11 @@ Again, we ensure we are starting with the same data and we use our time function
     print('numpy where solution run time: ' + str(t3))
     print('increase in speed from apply lambda: ' + str(int((t2 - t3)/t*100)) + '%')
 
-After an increase in performance by about 40%, *__numpy where__* beats *__.apply__* by another 40% using the same logic and dataset.
+After an increase in performance by about 50%, *__numpy where__* beats *__.apply__* by another 40% using the same logic and data.
 
 ![*__np.where__* run time](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/Screenshot%202023-11-08%20195301.png)
 
-A cleaner approach would be to use a multi-condition-capable module called *__numpy select__* so we aren't calling the same function twice. This function serves as an 'if', 'elif', 'else' block, so we can add many more conditions if we choose to.
+A cleaner approach that I much prefer is to use a module called *__numpy select__*. This allows us to run many conditions in the same way as an 'if', 'elif', 'else' block, so we aren't calling the same function twice.
 
     conditions = [
       (df['column'] != 'Dropout') & (df['othercolumn'] > 50),
@@ -127,7 +127,7 @@ A cleaner approach would be to use a multi-condition-capable module called *__nu
 > [!NOTE]
 > the order of the statements in the 'conditions' and 'options' lists matters just like a normal 'if', 'elif', 'else' block.
 
-Again, we ensure we are starting with the same data and we use our time function to measure processing time.
+Again, we ensure we are starting with the same dataframe and we use the time module to measure processing time.
 
     df = df_og
     start = time.time()
@@ -141,5 +141,5 @@ Again, we ensure we are starting with the same data and we use our time function
 
 ### Summary
 
-While loops should be avoided at all costs unless other solutions do not exist. *__.apply lambda__* is a fantastic tool that dramatically increases processing speed. However, many programmers stop here when they could instead use *__numpy where__* or *__numpy select__* which are much more efficient and just as intuitive to use.
+While loops should be avoided at all costs unless other solutions do not exist. A common alternative, *__.apply lambda__*, is a fantastic tool that dramatically increases processing speed. However, many programmers stop here when they could instead use *__numpy where__* or *__numpy select__* which are much more efficient and just as intuitive to use.
 
