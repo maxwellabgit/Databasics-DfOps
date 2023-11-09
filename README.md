@@ -135,11 +135,11 @@ Again, we ensure we are starting with the same dataframe and we use the time mod
     t4 = time.time() - start
     print('numpy select run time: ' + str(t4))
 
-###In most cases, *__numpy select__* and *__numpy where__* have comparable runtimes, but numpy select is at least more readable than a dozen numpy where statements.
+In most cases, *__numpy select__* and *__numpy where__* have comparable runtimes, but *__numpy select__* is much more readable than a dozen *__numpy where__* statements.
 
 ![*__np.select__* run time](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/Screenshot%202023-11-08%20195345.png)
 
 ### Summary
 
-While loops should be avoided at all costs unless other solutions do not exist. A common alternative, *__.apply lambda__*, is a fantastic tool that dramatically increases processing speed. However, many programmers stop here when they could instead use *__numpy where__* or *__numpy select__* which are much more efficient and just as intuitive to use.
+While/For loops should be avoided at all costs unless other solutions do not exist. A common alternative, *__.apply lambda__*, is a fantastic tool that dramatically increases processing speed. However, many programmers stop here when they could instead use *__numpy where__* or *__numpy select__* which are much more efficient and just as intuitive to use.
 
