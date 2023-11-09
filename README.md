@@ -24,7 +24,7 @@ Now we create a synthetic database to perform our basic operations. Three column
     colors = rand.choices(['Red', 'Blue', 'Green', 'Yellow', 'Violet'], k=50000)
     df_og = pd.Dataframe({'column':column, 'othercolumn':othercolumn, 'color':colors})
 
-[INSERT IMAGE OF DATABASE]
+![an image of the databse, gets the mind going](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/githubprofilebuildlast.png)
 
 ### Perform Some Basic Operations
 
@@ -57,7 +57,9 @@ End the timer and print the result.
     t = time.time() - start
     print('while loop solution run time: ' + str(t))
 
-[INSERT IMAGE OF TIMER OUTPUT]
+While loop run time is .677 seconds. Scaling is not an option.
+
+![while loop run time...](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/github112.png)
 
 This method is not vectorized because a while loop iteratively applies the inner operations one item at a time. As the size of this database and complexity of our operations increases, the processing time will increase exponentially. We can do better.
 
@@ -86,7 +88,9 @@ Again, we ensure we are starting with the same data and we use our time function
     print('apply lambda solution run time: ' + str(t2))
     print('increase in speed from while loops: ' + str(int((t1 - t2)/t*100)) + '%')
 
-[INSERT IMAGE OF TIMER OUTPUT]
+The same logic within a function applied with *__.apply__* improves processing time by 48%.
+
+![.apply(lambda x: ) runtime...](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/github111.png)
 
 ### __We can stil do better!__
 
@@ -104,9 +108,11 @@ Again, we ensure we are starting with the same data and we use our time function
     print('numpy where solution run time: ' + str(t3))
     print('increase in speed from apply lambda: ' + str(int((t2 - t3)/t*100)) + '%')
 
-[INSERT IMAGE OF TIMER OUTPUT]
+After an increase in performance by about 40%, *__numpy where__* beats *__.apply__* by another 40% using the same logic and dataset.
 
-A cleaner approach would be to use a multi-condition-capable module called *__numpy select__*. This function serves as an 'if', 'elif', 'else' block, so we can add many more conditions if we choose to.
+![*__np.where__* run time](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/Screenshot%202023-11-08%20195301.png)
+
+A cleaner approach would be to use a multi-condition-capable module called *__numpy select__* so we aren't calling the same function twice. This function serves as an 'if', 'elif', 'else' block, so we can add many more conditions if we choose to.
 
     conditions = [
       (df['column'] != 'Dropout') & (df['othercolumn'] > 50),
@@ -129,7 +135,9 @@ Again, we ensure we are starting with the same data and we use our time function
     t4 = time.time() - start
     print('numpy select run time: ' + str(t4))
 
-[INSERT IMAGE OF TIMER OUTPUT]
+###In most cases, *__numpy select__* and *__numpy where__* have comparable runtimes, but numpy select is at least more readable than a dozen numpy where statements.
+
+![*__np.select__* run time](https://github.com/maxwellabgit/Databasics-VectorizedOps/blob/main/Screenshot%202023-11-08%20195345.png)
 
 ### Summary
 
